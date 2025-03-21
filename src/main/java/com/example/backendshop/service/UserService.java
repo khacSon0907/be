@@ -31,6 +31,22 @@ public class UserService {
         return false;
     }
 
+    public Map<String, Object> getUserByEmail(String email) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isPresent()) {
+            response.put("message", "Get User done !");
+            response.put("data", userOptional.get());
+            return response;
+        } else {
+            response.put("message", "User not found!");
+            response.put("data", null);
+            return response;
+        }
+    }
+
+
     public String register(User user) {
         if (user.getUsername() == null || user.getUsername().isEmpty()) {
             return "Username is required!";
@@ -54,6 +70,8 @@ public class UserService {
         userRepository.save(user);
         return "Đăng ký thành công!";
     }
+
+
 
     public Map<String, Object> login(String email, String password) {
         Map<String, Object> response = new HashMap<>();
