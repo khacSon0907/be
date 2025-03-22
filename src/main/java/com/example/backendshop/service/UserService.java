@@ -1,5 +1,6 @@
 package com.example.backendshop.service;
 
+import com.example.backendshop.model.Cart;
 import com.example.backendshop.model.CartItem;
 import com.example.backendshop.model.User;
 import com.example.backendshop.model.UserRole;
@@ -22,14 +23,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
 
-    public boolean deleteUser(String id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            userRepository.deleteById(id);
-            return true;
-        }
-        return false;
-    }
+
 
     public Map<String, Object> getUserByEmail(String email) {
         Map<String, Object> response = new HashMap<>();
@@ -94,61 +88,36 @@ public class UserService {
             return response;
         }
     }
-    public User updateUser(String id, User updatedUser) {
-        Optional<User> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            User user = existingUser.get();
-
-            if (updatedUser.getUsername() != null) {
-                user.setUsername(updatedUser.getUsername());
-            }
-            if (updatedUser.getEmail() != null) {
-                user.setEmail(updatedUser.getEmail());
-            }
-            if (updatedUser.getPassword() != null) {
-                // Mã hóa mật khẩu mới trước khi cập nhật
-                user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-            }
-            if (updatedUser.getPhonenumber() != null) {
-                user.setPhonenumber(updatedUser.getPhonenumber());
-            }
-            if (updatedUser.getUserRole() != null) {
-                user.setUserRole(updatedUser.getUserRole());
-            }
-
-            return userRepository.save(user);
-        }
-        return null;
-    }
 
     public List<User> getAllUser() {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(String id) {
-        return userRepository.findById(id);
-    }
+    public User updateUserByEmail(String email, Map<String, Object> updates) {
+        Optional<User> existingUser = userRepository.findByEmail(email);
 
-    public void addToCart(String userId, CartItem item) {
-        Optional<User> userOpt = userRepository.findById(userId);
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            user.getCart().addItem(item);
-            userRepository.save(user);
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+
+            // Kiểm tra từng trường có trong Map và cập nhật nếu có
+            if (updates.containsKey("username")) {
+                user.setUsername((String) updates.get("username"));
+            }
+            if (updates.containsKey("password")) {
+                user.setPassword((String) updates.get("password"));
+            }
+            if (updates.containsKey("phonenumber")) {
+                user.setPhonenumber((String) updates.get("phonenumber"));
+            }
+            if (updates.containsKey("userRole")) {
+                user.setUserRole(UserRole.valueOf((String) updates.get("userRole")));
+            }
+            if (updates.containsKey("cart")) {
+                user.setCart((Cart) updates.get("cart"));
+            }
+
+            return userRepository.save(user);
         }
-    }
-
-    public void removeFromCart(String userId, String productId) {
-        Optional<User> userOpt = userRepository.findById(userId);
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            user.getCart().removeItem(productId);
-            userRepository.save(user);
-        }
-    }
-
-    public double getTotalCartPrice(String userId) {
-        Optional<User> userOpt = userRepository.findById(userId);
-        return userOpt.map(user -> user.getCart().getTotalPrice()).orElse(0.0);
+        return null; // Không tìm thấy user
     }
 }

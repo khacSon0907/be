@@ -64,56 +64,18 @@ public class UserController {
         response.put("users", users);
         return ResponseEntity.ok(response);
     }
+    @PatchMapping("/user/update")
+    public ResponseEntity<?> updateUserByEmail(@RequestParam String email, @RequestBody Map<String, Object> updates) {
+        User user = userService.updateUserByEmail(email, updates);
 
-//    @GetMapping("/user/{id}")
-//    public ResponseEntity<Map<String, Object>> getUserById(@PathVariable String id) {
-//        Optional<User> user = userService.getUserById(id);
-//        Map<String, Object> response = new HashMap<>();
-//        if (user.isPresent()) {
-//            response.put("status", "success");
-//            response.put("user", user.get());
-//            return ResponseEntity.ok(response);
-//        }
-//        response.put("status", "error");
-//        response.put("message", "User not found!");
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-//    }
-//
-//    @PostMapping("/{userId}/cart")
-//    public ResponseEntity<Map<String, Object>> addToCart(@PathVariable String userId, @RequestBody CartItem item) {
-//        userService.addToCart(userId, item);
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("message", "Item added to cart");
-//        return ResponseEntity.ok(response);
-//    }
-//
-//    @DeleteMapping("/{userId}/cart/{productId}")
-//    public ResponseEntity<Map<String, Object>> removeFromCart(@PathVariable String userId, @PathVariable String productId) {
-//        userService.removeFromCart(userId, productId);
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("message", "Item removed from cart");
-//        return ResponseEntity.ok(response);
-//    }
-//
-//    @GetMapping("/{userId}/cart/total")
-//    public ResponseEntity<Map<String, Object>> getTotalCartPrice(@PathVariable String userId) {
-//        double total = userService.getTotalCartPrice(userId);
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("total_price", total);
-//        return ResponseEntity.ok(response);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable String id) {
-//        boolean isDeleted = userService.deleteUser(id);
-//        Map<String, Object> response = new HashMap<>();
-//        if (isDeleted) {
-//            response.put("status", "success");
-//            response.put("message", "User deleted successfully!");
-//            return ResponseEntity.ok(response);
-//        }
-//        response.put("status", "error");
-//        response.put("message", "User not found!");
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-//    }
+        if (user != null) {
+            return ResponseEntity.ok().body(
+                    new ResponseMessage("Cập nhật thành công", user)
+            );
+        } else {
+            return ResponseEntity.status(404).body(
+                    new ResponseMessage("Thất bại, không tìm thấy email", null)
+            );
+        }
+    }
 }
