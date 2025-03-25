@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -78,14 +79,15 @@ public class ProductController {
 
     // API xóa sản phẩm
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable String id) {
+    public ResponseEntity<Map<String, String>> deleteProduct(@PathVariable String id) {
         try {
             productService.deleteProduct(id);
-            return ResponseEntity.ok("Xóa sản phẩm thành công");
+            return ResponseEntity.ok(Map.of("message", "Xóa sản phẩm thành công"));
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
 
     // API để xem ảnh
     @GetMapping("/images/{fileName}")
