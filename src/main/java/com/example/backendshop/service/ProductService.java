@@ -34,27 +34,7 @@ public class ProductService {
     }
 
     // Cập nhật sản phẩm
-    public Product updateProduct(String id, String name, MultipartFile image, double price, String description, String category, String brand) throws IOException {
-        Optional<Product> existingProduct = productRepository.findById(id);
-        if (existingProduct.isPresent()) {
-            Product product = existingProduct.get();
-            product.setName(name);
-            product.setPrice(price);
-            product.setDescription(description);
-            product.setCategory(category);
-            product.setBrand(brand);
 
-            // Nếu có ảnh mới, cập nhật ảnh
-            if (image != null && !image.isEmpty()) {
-                String imageUrl = FileUploadUtil.saveFile("uploads", image);
-                product.setImageUrl(imageUrl);
-            }
-
-            return productRepository.save(product);
-        } else {
-            throw new RuntimeException("Product not found");
-        }
-    }
 
     // Xóa sản phẩm
     public void deleteProduct(String id) {
@@ -64,4 +44,29 @@ public class ProductService {
             throw new RuntimeException("Product not found");
         }
     }
+    public Product updateProduct(String id, String name, MultipartFile image,
+                                 Double price, String description, String category, String brand) throws IOException {
+
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isEmpty()) {
+            throw new RuntimeException("Sản phẩm không tồn tại");
+        }
+
+        Product product = optionalProduct.get();
+
+        if (name != null) product.setName(name);
+        if (price != null) product.setPrice(price);
+        if (description != null) product.setDescription(description);
+        if (category != null) product.setCategory(category);
+        if (brand != null) product.setBrand(brand);
+
+        // Nếu có ảnh mới thì lưu lại và cập nhật
+        if (image != null && !image.isEmpty()) {
+            String imageUrl = FileUploadUtil.saveFile("uploads", image);
+            product.setImageUrl(imageUrl);
+        }
+
+        return productRepository.save(product);
+    }
+
 }

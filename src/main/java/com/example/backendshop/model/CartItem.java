@@ -9,8 +9,18 @@ import lombok.*;
 public class CartItem {
     private String productId;
     private String productName;
+    private String size; // ✅ THÊM SIZE
     private int quantity;
     private double price;
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public double getPrice(){
         return price;
@@ -37,5 +47,18 @@ public class CartItem {
 
     public int getQuantity() {
         return quantity;
+    }
+
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }

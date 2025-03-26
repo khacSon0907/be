@@ -1,4 +1,4 @@
-package com.example.backendshop.controller;
+package com.example.backendshop.respone;
 
 
 public class ErrorResponse {

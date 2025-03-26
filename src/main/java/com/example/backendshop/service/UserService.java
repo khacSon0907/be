@@ -22,9 +22,6 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-
-
     public Map<String, Object> getUserByEmail(String email) {
         Map<String, Object> response = new HashMap<>();
         Optional<User> userOptional = userRepository.findByEmail(email);
@@ -119,5 +116,39 @@ public class UserService {
             return userRepository.save(user);
         }
         return null; // Không tìm thấy user
+    }
+        public User addItemToUserCart(String email, CartItem newItem) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            Cart cart = user.getCart();
+            if (cart == null) cart = new Cart();
+
+            cart.addItem(newItem);
+            user.setCart(cart);
+
+            return userRepository.save(user);
+        }
+        return null;
+    }
+
+    public Cart getUserCart(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        return userOptional.map(User::getCart).orElse(null);
+    }
+    public boolean removeItemFromUserCart(String email, String productId, String size) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            Cart cart = user.getCart();
+            if (cart != null) {
+                cart.removeItem(productId, size); // Gọi đúng theo kiểu mới
+                user.setCart(cart);
+                userRepository.save(user);
+                return true;
+            }
+        }
+        return false;
     }
 }

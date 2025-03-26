@@ -1,6 +1,7 @@
 package com.example.backendshop.controller;
 
 import com.example.backendshop.model.Product;
+import com.example.backendshop.respone.ResponseMessage;
 import com.example.backendshop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -57,25 +58,7 @@ public class ProductController {
         }
     }
 
-    // API cập nhật sản phẩm
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateProduct(
-            @PathVariable String id,
-            @RequestParam("name") String name,
-            @RequestParam(value = "image", required = false) MultipartFile image,
-            @RequestParam("price") double price,
-            @RequestParam("description") String description,
-            @RequestParam("category") String category,
-            @RequestParam("brand") String brand) {
-        try {
-            Product updatedProduct = productService.updateProduct(id, name, image, price, description, category, brand);
-            return ResponseEntity.ok(updatedProduct);
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body("Lỗi khi cập nhật sản phẩm: " + e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+
 
     // API xóa sản phẩm
     @DeleteMapping("/delete/{id}")
@@ -88,6 +71,24 @@ public class ProductController {
         }
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateProduct(
+            @PathVariable String id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) MultipartFile image,
+            @RequestParam(required = false) Double price,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String brand) {
+        try {
+            Product updatedProduct = productService.updateProduct(id, name, image, price, description, category, brand);
+            return ResponseEntity.ok(new ResponseMessage("Cập nhật thành công", updatedProduct));
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body(new ResponseMessage("Lỗi khi lưu ảnh", e.getMessage()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new ResponseMessage("Lỗi", e.getMessage()));
+        }
+    }
 
     // API để xem ảnh
     @GetMapping("/images/{fileName}")

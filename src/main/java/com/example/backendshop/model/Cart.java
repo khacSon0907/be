@@ -12,16 +12,17 @@ public class Cart {
 
     public void addItem(CartItem item) {
         for (CartItem cartItem : items) {
-            if (cartItem.getProductId().equals(item.getProductId())) {
-                cartItem.setQuantity(cartItem.getQuantity() + item.getQuantity()); // Cộng dồn số lượng nếu sản phẩm đã có
+            if (cartItem.getProductId().equals(item.getProductId()) &&
+                    cartItem.getSize().equals(item.getSize())) {
+                cartItem.setQuantity(cartItem.getQuantity() + item.getQuantity());
                 return;
             }
         }
-        items.add(item); // Nếu sản phẩm chưa có, thêm mới
+        items.add(item);
     }
-
-    public void removeItem(String productId) {
-        items.removeIf(item -> item.getProductId().equals(productId));
+    public void removeItem(String productId, String size) {
+        items.removeIf(item ->
+                        item.getProductId().equals(productId) && item.getSize().equals(size));
     }
 
     public double getTotalPrice() {
