@@ -25,6 +25,29 @@ public class Cart {
                         item.getProductId().equals(productId) && item.getSize().equals(size));
     }
 
+    public void increaseQuantity(String productId, String size) {
+        for (CartItem item : items) {
+            if (item.getProductId().equals(productId) && item.getSize().equals(size)) {
+                item.setQuantity(item.getQuantity() + 1);
+                return;
+            }
+        }
+    }
+
+    public void decreaseQuantity(String productId, String size) {
+        for (CartItem item : items) {
+            if (item.getProductId().equals(productId) && item.getSize().equals(size)) {
+                int currentQty = item.getQuantity();
+                if (currentQty > 1) {
+                    item.setQuantity(currentQty - 1);
+                } else {
+                    removeItem(productId, size); // Xoá luôn nếu còn 1
+                }
+                return;
+            }
+        }
+    }
+
     public double getTotalPrice() {
         return items.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
     }

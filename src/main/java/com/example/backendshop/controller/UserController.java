@@ -23,6 +23,50 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+    @DeleteMapping("/user/delete")
+    public ResponseEntity<ResponseMessage> deleteUserById(@RequestParam String id) {
+        boolean deleted = userService.deleteUserById(id);
+        if (deleted) {
+            return ResponseEntity.ok(new ResponseMessage("Xoá user thành công!", null));
+        } else {
+            return ResponseEntity.status(404).body(new ResponseMessage("Không tìm thấy user để xoá", null));
+        }
+    }
+    @PatchMapping("/cart/increase")
+    public ResponseEntity<?> increaseQuantity(
+            @RequestParam String email,
+            @RequestParam String productId,
+            @RequestParam String size) {
+
+        boolean success = userService.increaseItemQuantity(email, productId, size);
+
+        if (success) {
+            return ResponseEntity.ok(new ResponseMessage("Tăng số lượng thành công", null));
+        } else {
+            return ResponseEntity.status(404)
+                    .body(new ResponseMessage("Không tìm thấy user hoặc sản phẩm", null));
+        }
+    }
+
+    @PatchMapping("/cart/decrease")
+    public ResponseEntity<?> decreaseQuantity(
+            @RequestParam String email,
+            @RequestParam String productId,
+            @RequestParam String size) {
+
+        boolean success = userService.decreaseItemQuantity(email, productId, size);
+
+        if (success) {
+            return ResponseEntity.ok(new ResponseMessage("Giảm số lượng thành công", null));
+        } else {
+            return ResponseEntity.status(404)
+                    .body(new ResponseMessage("Không tìm thấy user hoặc sản phẩm", null));
+        }
+    }
+
+
+
     @DeleteMapping("/cart/remove")
     public ResponseEntity<?> removeFromCart(@RequestParam String email,
                                             @RequestParam String productId,

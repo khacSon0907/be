@@ -117,7 +117,7 @@ public class UserService {
         }
         return null; // Không tìm thấy user
     }
-        public User addItemToUserCart(String email, CartItem newItem) {
+    public User addItemToUserCart(String email, CartItem newItem) {
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -148,6 +148,43 @@ public class UserService {
                 userRepository.save(user);
                 return true;
             }
+        }
+        return false;
+    }
+
+    public boolean increaseItemQuantity(String email, String productId, String size) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) return false;
+
+        User user = userOpt.get();
+        Cart cart = user.getCart();
+        if (cart == null) return false;
+
+        cart.increaseQuantity(productId, size);
+        user.setCart(cart);
+        userRepository.save(user);
+        return true;
+    }
+
+    public boolean decreaseItemQuantity(String email, String productId, String size) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) return false;
+
+        User user = userOpt.get();
+        Cart cart = user.getCart();
+        if (cart == null) return false;
+
+        cart.decreaseQuantity(productId, size);
+        user.setCart(cart);
+        userRepository.save(user);
+        return true;
+    }
+
+
+    public boolean deleteUserById(String id){
+        if(userRepository.existsById(id)){
+            userRepository.deleteById(id);
+            return true;
         }
         return false;
     }
