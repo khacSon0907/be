@@ -37,7 +37,7 @@ public class OrderController {
     }
 
     //  3. User xem đơn hàng của chính mình
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<ResponseMessage> getOrdersByEmail(@RequestParam String email) {
         List<Order> orders = orderService.getOrdersByEmail(email);
         if (orders.isEmpty()) {

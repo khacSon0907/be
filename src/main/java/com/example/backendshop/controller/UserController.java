@@ -105,6 +105,7 @@ public class UserController {
     public Map<String, Object> getUserByEmail(@PathVariable String email) {
         return userService.getUserByEmail(email);
     }
+    
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(@RequestBody User user) {
         String result = userService.register(user);
